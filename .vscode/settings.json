@@ -1,0 +1,14 @@
+{
+    "files.autoSave": "onWindowChange",
+    "editor.fontSize": 16,
+    "editor.cursorStyle": "line",
+    "files.exclude": {
+        ".vscode": true,
+        "**/.git": false
+    },
+    "eslint.workingDirectories": [
+
+        "frontend/",
+        "backend/"
+    ]
+}
