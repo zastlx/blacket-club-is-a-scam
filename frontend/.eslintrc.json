@@ -28,7 +28,7 @@
         "no-mixed-spaces-and-tabs": "error",
         "indent": [
             "error",
-            "tab",
+            4,
             {
                 "SwitchCase": 1
             }
@@ -142,8 +142,6 @@
         "use-isnan": "error",
         "prefer-const": "error",
         "prefer-spread": "error",
-        "simple-import-sort/imports": "error",
-        "simple-import-sort/exports": "error",
         "unused-imports/no-unused-imports": "error"
     }
 }

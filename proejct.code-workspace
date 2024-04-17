@@ -4,5 +4,12 @@
 			"path": "frontend"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"editor.insertSpaces": false,
+		"editor.detectIndentation": false,
+		"editor.tabSize": 4,
+		"editor.codeActionsOnSave": {
+            "source.fixAll": "always"
+        }
+	}
 }
