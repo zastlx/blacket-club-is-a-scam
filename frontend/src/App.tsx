@@ -2,19 +2,20 @@ import { Routes, Route } from "react-router-dom";
 import { Authentication, Home } from "./pages";
 import { AuthType } from "./pages/Authentication";
 import { useState } from "react";
-import { Background, Bar } from "./components";
+import { Background, Bar, Redirect } from "./components";
 
 function App() {
-    // TODO: Add a state to control the background visibility
     const [background] = useState<boolean>(true);
-    const [bar] = useState<boolean>(true);
+    const [bar, setBar] = useState<boolean>(false);
 
     return (
         <>
             {background && <Background />}
 
             <Routes>
-                <Route path="*" element={<Home />} />
+                {/* redirect  */}
+                <Route path="*" element={<Redirect />} />
+                <Route path="/" element={<Home setBar={setBar} />} />
                 <Route path="/login" element={<Authentication type={AuthType.Login} />} />
                 <Route path="/register" element={<Authentication type={AuthType.Register} />} />
             </Routes>

@@ -118,8 +118,17 @@ a {
     // top border radius
     border-radius: 1vh 1vh 0 0;
 
-    &>div {
+    &>a.farRight {
+        right: 0;
+        position: absolute;
+        border-radius: 1vh 0 0 1vh;
+        height: 60%;
+        // show in middle of parent
+        top: 20%;
+    }
+    &>a {
         display: flex;
+        text-decoration: none;
         justify-content: center;
         align-items: center;
         width: fit-content;
@@ -127,7 +136,7 @@ a {
         padding: 0 2vh;
         background-color: rgb(35, 38, 40);
         transition: 0.2s linear;
-        border-radius: 1vh 1vh 0% 0;
+        border-radius: 1vh 1vh 0 0;
 
         // hover
         &:hover {

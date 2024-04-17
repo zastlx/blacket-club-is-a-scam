@@ -1,10 +1,19 @@
+import { useEffect } from "react";
 import Center from "./Center";
 
-export default () => {
+export default (props: {
+    setBar: (bar: boolean) => void;
+}) => {
+    useEffect(() => {
+        props.setBar(true);
+    }, []);
+
     return (
         <div>
             <Center>
-                <h1>Home</h1>
+                <div>
+                    <h1>Accounts</h1>
+                </div>
             </Center>
         </div>
     );
