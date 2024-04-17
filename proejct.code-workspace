@@ -13,6 +13,10 @@
 		"editor.tabSize": 4,
 		"editor.codeActionsOnSave": {
             "source.fixAll": "always"
-        }
+        },
+        "eslint.workingDirectories": [
+            "backend",
+            "frontend"
+        ]
 	}
 }

@@ -8,7 +8,6 @@ function App() {
     // TODO: Add a state to control the background visibility
     const [background] = useState<boolean>(true);
 
-
     return (
         <>
             {background && <Background />}
