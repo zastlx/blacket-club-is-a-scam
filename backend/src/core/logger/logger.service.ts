@@ -1,7 +1,7 @@
 import { Injectable, LoggerService } from "@nestjs/common";
 
 @Injectable()
-export class BlacketLoggerService implements LoggerService {
+export class BLoggerService implements LoggerService {
     log(message: any, context?: string, prefix?: string) {
         if (!prefix) prefix = "Nest";
 

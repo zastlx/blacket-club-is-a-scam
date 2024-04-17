@@ -1,28 +1,21 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
-import { RedisService } from "src/redis/redis.service";
 import { Request } from "express";
 import { Reflector } from "@nestjs/core";
 import { IS_PUBLIC_KEY } from "../decorator";
 
-interface Session {
-    id: string;
-    userId: string;
-    createdAt: Date;
-}
+
 
 @Injectable()
 export class AuthGuard implements CanActivate {
     constructor(
-        private readonly redisService: RedisService, private reflector: Reflector
+        private reflector: Reflector
     ) { }
 
     async canActivate(context: ExecutionContext) {
-        const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+        if (this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
             context.getHandler(),
             context.getClass()
-        ]);
-
-        if (isPublic) return true;
+        ])) return true;
 
         const request: Request = context.switchToHttp().getRequest();
 
@@ -32,8 +25,8 @@ export class AuthGuard implements CanActivate {
 
         try {
             const decodedToken = JSON.parse(Buffer.from(token, "base64").toString());
-
-            const session: Session = JSON.parse(await this.redisService.get(`blacket-session:${decodedToken.userId}`) as string);
+            const session = null;
+            // const session: Session = JSON.parse();
             if (!session) throw new UnauthorizedException();
 
             if (decodedToken.id !== session.id) throw new UnauthorizedException();
