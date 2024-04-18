@@ -1,8 +1,8 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Authentication, Home } from "./pages";
 import { AuthType } from "./pages/Authentication";
 import { useState } from "react";
-import { Background, Bar, Redirect } from "./components";
+import { Background, Bar } from "./components";
 
 function App() {
     const [background] = useState<boolean>(true);
@@ -13,8 +13,7 @@ function App() {
             {background && <Background />}
 
             <Routes>
-                {/* redirect  */}
-                <Route path="*" element={<Redirect />} />
+                <Route path="*" element={<Navigate to="/login" />} />
                 <Route path="/" element={<Home setBar={setBar} />} />
                 <Route path="/login" element={<Authentication type={AuthType.Login} />} />
                 <Route path="/register" element={<Authentication type={AuthType.Register} />} />
