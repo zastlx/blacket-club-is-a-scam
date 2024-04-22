@@ -1,14 +1,19 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
-import { Request } from "express";
 import { Reflector } from "@nestjs/core";
 import { IS_PUBLIC_KEY } from "../decorator";
+import { AuthService } from "src/auth/auth.service";
+import BRequest from "src/types/request";
 
-
+interface Session {
+	userId: string;
+	password: string;
+}
 
 @Injectable()
 export class AuthGuard implements CanActivate {
     constructor(
-        private reflector: Reflector
+        private reflector: Reflector,
+        private authService: AuthService
     ) { }
 
     async canActivate(context: ExecutionContext) {
@@ -17,29 +22,21 @@ export class AuthGuard implements CanActivate {
             context.getClass()
         ])) return true;
 
-        const request: Request = context.switchToHttp().getRequest();
-
+        const request: BRequest = context.switchToHttp().getRequest();
         const token = this.extractTokenFromHeader(request);
-
         if (!token) throw new UnauthorizedException();
 
-        try {
-            const decodedToken = JSON.parse(Buffer.from(token, "base64").toString());
-            const session = null;
-            // const session: Session = JSON.parse();
-            if (!session) throw new UnauthorizedException();
+        const session = await this.authService.findSession(token);
 
-            if (decodedToken.id !== session.id) throw new UnauthorizedException();
+        if (!session) throw new UnauthorizedException();
 
-            request["session"] = session;
-        } catch {
-            throw new UnauthorizedException();
-        }
+        request.session = session;
 
         return true;
     }
 
-    private extractTokenFromHeader(request: Request): string | undefined {
+    private extractTokenFromHeader(request: BRequest): string | undefined {
+        // @ts-ignore
         return request.headers.authorization ?? undefined;
     }
 }

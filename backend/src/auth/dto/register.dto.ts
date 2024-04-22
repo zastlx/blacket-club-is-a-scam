@@ -8,10 +8,6 @@ export class RegisterDto {
     @IsNotEmpty()
     @Validate((value: string) => value.length > 0)
     readonly password: string;
-
-    @IsNotEmpty()
-    @Validate((value: boolean) => value === true)
-    readonly acceptedTerms: boolean;
 }
 
 export default RegisterDto;

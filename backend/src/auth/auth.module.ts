@@ -3,9 +3,11 @@ import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 
 @Module({
+    imports: [],
     providers: [
-        AuthService,
+        AuthService
     ],
-    controllers: [AuthController]
+    controllers: [AuthController],
+    exports: [AuthService]
 })
 export class AuthModule { }

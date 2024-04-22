@@ -1,13 +1,11 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 
-import { BLoggerService } from "./core/logger/logger.service";
 import { ValidationPipe } from "@nestjs/common";
 import { useContainer } from "class-validator";
-import { PrismaClient } from "@prisma/client";
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule, { logger: new BLoggerService() });
+    const app = await NestFactory.create(AppModule);
 
     app.enableCors({
         origin: [
