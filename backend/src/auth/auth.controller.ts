@@ -10,12 +10,14 @@ export class AuthController {
     ) { }
 
     @Public()
+    @HttpCode(HttpStatus.OK)
     @Post("register")
     register(@Body() dto: RegisterDto, @RealIp() ip: string) {
         return this.authService.register(dto, ip);
     }
 
     @Public()
+    @HttpCode(HttpStatus.OK)
     @Post("login")
     login(@Body() dto: LoginDto, @RealIp() ip: string) {
         return this.authService.login(dto, ip);

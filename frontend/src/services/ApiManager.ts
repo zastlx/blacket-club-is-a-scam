@@ -2,7 +2,7 @@ import axios, { type AxiosInstance } from "axios";
 import authStore from "../stores/AuthStore";
 
 interface Response {
-    data: unknown;
+    data: any;
     status: number;
 }
 

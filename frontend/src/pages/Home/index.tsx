@@ -1,20 +1,23 @@
 import { useEffect } from "react";
 import Center from "./Center";
+import withAuth from "../../components/HOCs/withAuths";
+import InfoContainer from "../../components/InfoContainer";
 
-export default (props: {
+const Home = ({
+    setBar
+}: {
     setBar: (bar: boolean) => void;
 }) => {
     useEffect(() => {
-        props.setBar(true);
+        setBar(true);
     }, []);
 
     return (
         <div>
             <Center>
-                <div>
-                    <h1>Accounts</h1>
-                </div>
+                <InfoContainer>Womp</InfoContainer>
             </Center>
         </div>
     );
 };
+export default withAuth(Home as React.FC);

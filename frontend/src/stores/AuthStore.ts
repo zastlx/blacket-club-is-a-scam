@@ -17,11 +17,14 @@ class AuthStore {
     @action login = (token: string) => {
         if (this.isLoggedIn) return;
         this.authToken = token;
+        localStorage.setItem("token", token);
         this.isLoggedIn = true;
     };
 
     @action logout = async () => {
         await ApiManager.delete("/auth/logout");
+        this.authToken = "";
+        localStorage.removeItem("token");
     };
 
     get token() {
