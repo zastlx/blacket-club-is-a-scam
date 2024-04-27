@@ -27,12 +27,14 @@ model User {
     createdAt DateTime @default(now())
     sessions  Session[]
     accounts  Account[]
+    activeServices OngoingServices[]
 }
 
 model Account {
     id        String   @id @default(cuid())
+    username  String   @unique
     password  String
-    session   String
+    session   String?
     userId    String
     user      User     @relation(fields: [userId], references: [id])
 }
@@ -42,4 +44,19 @@ model Session {
     userId    String
     password  String
     user      User     @relation(fields: [userId], references: [id])
+}
+
+model Services {
+    id        String   @id @default(cuid())
+    name      String
+    price     Int
+    ongoing   OngoingServices[]
+}
+
+model OngoingServices {
+    id        String   @id @default(cuid())
+    userId    String
+    serviceId String
+    user      User     @relation(fields: [userId], references: [id])
+    service   Services @relation(fields: [serviceId], references: [id])
 }

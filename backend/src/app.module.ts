@@ -8,6 +8,9 @@ import { AuthModule } from "./auth/auth.module";
 import { AuthGuard } from "./core/guard";
 import { PrismaModule } from "./prisma/prisma.module";
 import { UserModule } from "./user/user.module";
+import { OpenerController } from "./things/opener/opener.controller";
+import { OpenerModule } from "./things/opener/opener.module";
+import { AccountModule } from "./account/account.module";
 
 @Module({
     imports: [
@@ -16,9 +19,11 @@ import { UserModule } from "./user/user.module";
         DefaultModule,
         AuthModule,
         UserModule,
-        PrismaModule
+        AccountModule,
+        PrismaModule,
+        OpenerModule,
     ],
-    controllers: [],
+    controllers: [OpenerController],
     providers: [
         { provide: APP_GUARD, useClass: AuthGuard },
     ]

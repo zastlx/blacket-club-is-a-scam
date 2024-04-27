@@ -7,25 +7,24 @@ import BRequest from "src/types/request";
 import { PublicUser } from "src/core/entity/publicUser.entity";
 
 @Injectable() //
-export class UserService {
+export class AccountService {
     constructor(
         private prisma: PrismaService
     ) { }
 
-    async me(req: BRequest) {
-        return new PublicUser(await this.getUserById(req.session.userId));
-    }
-
-    async getUserById(id: string, include: { [key: string]: boolean } = {}) {
-        return await this.prisma.user.findUnique({
+    async getAccounts(userId: string) {
+        return await this.prisma.account.findMany({
             where: {
-                id
-            },
-            include
+                userId
+            }
         });
     }
 
-    async hasPremium(id: string) {
-        return (await this.getUserById(id)).premium;
+    async getAccountById(id: string) {
+        return await this.prisma.account.findUnique({
+            where: {
+                id
+            }
+        });
     }
 }
