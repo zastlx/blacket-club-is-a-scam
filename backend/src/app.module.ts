@@ -11,6 +11,7 @@ import { UserModule } from "./user/user.module";
 import { OpenerController } from "./things/opener/opener.controller";
 import { OpenerModule } from "./things/opener/opener.module";
 import { AccountModule } from "./account/account.module";
+import { SocketModule } from "./gateway/socket.module";
 
 @Module({
     imports: [
@@ -18,6 +19,7 @@ import { AccountModule } from "./account/account.module";
 
         DefaultModule,
         AuthModule,
+        SocketModule,
         UserModule,
         AccountModule,
         PrismaModule,

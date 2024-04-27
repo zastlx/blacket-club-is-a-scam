@@ -8,6 +8,7 @@ interface ActiveOpens {
     user: Account;
     opened: number;
     total: number | null;
+    serviceId: string;
 }
 
 @Injectable()
@@ -17,33 +18,72 @@ export class OpenerService {
         private userService: UserService,
         private accountService: AccountService
     ) { }
-    private memoryOpens: { [userId: string]: ActiveOpens[] } = {};
+    public memoryOpens: { [userId: string]: ActiveOpens[] } = {};
+    readonly openerServiceId = "clvhdte0i000011nd20o28uq1";
 
-    async getServices(userId: string) {
-        return this.prisma.user.findUniqueOrThrow({
+    // actual opening
+    async startOpening(index: number) {
+        const open = this.memoryOpens[index];
+
+    }
+
+    // utils
+    async getUserActiveServices(userId: string) {
+        return (await this.prisma.user.findUniqueOrThrow({
             where: {
                 id: userId
             },
             include: {
-                activeServices: true
+                activeServices: {
+                    include: {
+                        service: true
+                    }
+                }
+            }
+        })).activeServices.map(({ serviceId, ...rest }) => rest);
+    }
+
+    async getServiceById(serviceId: string) {
+        return await this.prisma.services.findUnique({
+            where: {
+                id: serviceId
             }
         });
     }
 
+    // endpoints
     async status(userId: string) {
-        return (await this.getServices(userId)).activeServices
+        return await this.getUserActiveServices(userId);
     }
 
     async requestOpen(userId: string, accountId: string) {
         if (!this.memoryOpens[userId]) this.memoryOpens[userId] = [];
         if (this.memoryOpens[userId].length == 1 && !this.userService.hasPremium(userId)) throw new ConflictException("Only premium users can have more than one active opener.");
         const account = await this.accountService.getAccountById(accountId);
-        if (!account) throw new BadRequestException("Account not found.");
+        if (!account || account.userId !== userId) throw new BadRequestException("Account not found.");
+
+        const service = await this.prisma.ongoingServices.create({
+            data: {
+                service: {
+                    connect: {
+                        id: this.openerServiceId
+                    }
+                },
+                user: {
+                    connect: {
+                        id: userId
+                    }
+                }
+            }
+        });
 
         this.memoryOpens[userId].push({
             user: account,
-            opened: Date.now(),
-            total: null
+            opened: 0,
+            total: null,
+            serviceId: service.id
         });
+
+        this.startOpening(this.memoryOpens[userId].length - 1);
     }
 }
