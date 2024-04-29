@@ -1,6 +1,7 @@
 import { Global, Module } from "@nestjs/common";
 import { SocketGateway } from "./socket.gateway";
 import { SocketService } from "./socket.service";
+import { AuthService } from "src/auth/auth.service";
 
 @Global()
 @Module({
@@ -8,6 +9,7 @@ import { SocketService } from "./socket.service";
     providers: [
         SocketGateway,
         SocketService,
+        AuthService
     ],
     exports: [SocketService]
 })

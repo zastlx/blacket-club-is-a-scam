@@ -1,35 +1,40 @@
 import { Injectable } from "@nestjs/common";
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
+import { AuthService } from "src/auth/auth.service";
+import { Socket } from "src/types/socket";
+
+enum Messages {
+    Authorized = "0",
+    Unauthorized = "1",
+}
 
 @Injectable()
 export class SocketService {
+    constructor(
+        private authSerivce: AuthService
+    ) { }
     public server: Server;
 
-    emitMessageAndCloseSocket(socket: Socket, event: string, data: any) {
-        socket.emit(event, data);
-        socket.disconnect();
-    }
-
     async test(socket: Socket, data: string) {
+        socket.emit("test", socket.session);
         console.log(data);
         return data;
     }
 
+    async emitMessageAndCloseSocket(client: Socket, message: string, data?: any) {
+        client.emit(message, data);
+        client.disconnect(true);
+    }
+
     async verifyConnection(client: Socket) {
-        // const token = client.handshake.auth.token as string | null;
+        const token = client.handshake.auth.token as string | null;
+        if (!token) return this.emitMessageAndCloseSocket(client, Messages.Unauthorized);
 
-        // if (!token) return this.emitMessageAndCloseSocket(client, "unauthorized", { message: "no token provided" });
+        const session = await this.authSerivce.findSession(token);
+        if (!session) return this.emitMessageAndCloseSocket(client, Messages.Unauthorized);
 
-        // const decodedToken = safelyParseJSON(Buffer.from(token, "base64").toString());
-        // if (!decodedToken) return this.emitMessageAndCloseSocket(client, "unauthorized", { message: "invalid token" });
-
-        // const session: Session = safelyParseJSON(await this.redisService.get(`blacket-session:${decodedToken.userId}`) as string);
-        // if (!session) return this.emitMessageAndCloseSocket(client, "unauthorized", { message: "invalid session" });
-
-        // if (decodedToken.id !== session.id) return this.emitMessageAndCloseSocket(client, "unauthorized", { message: "token mismatch" });
-
-        // client.session = session;
-        console.log("varifycon")
-        return client.send("authenticated", { userId: "blooket"});
+        client.session = session;
+        //console.log("varifycon")
+        return client.emit
     }
 }

@@ -1,9 +1,9 @@
 import { UseGuards } from "@nestjs/common";
 import { OnGatewayConnection, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 import { Server as eiowsServer } from "eiows";
 import { SocketService } from "./socket.service";
-
+import { Socket } from "src/types/socket";
 @WebSocketGateway(0, {
     path: "/gateway",
     wsEngine: eiowsServer
@@ -17,8 +17,7 @@ export class SocketGateway implements OnGatewayConnection {
     public server: Server;
 
     handleConnection(client: Socket) {
-        console.log("connected");
-        return true;
+        return this.socketService.verifyConnection(client);
     }
 
     @SubscribeMessage("test")
