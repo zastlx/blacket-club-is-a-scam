@@ -8,6 +8,7 @@ import { PublicUser } from "src/core/entity/publicUser.entity";
 import { addAccountDto } from "./dto";
 import axios from "axios";
 import { PublicAccount } from "src/core/entity/publicAccount.entity";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 @Injectable() //
 export class AccountService {
@@ -29,17 +30,12 @@ export class AccountService {
     }
 
     async addAccount(userId: string, data: addAccountDto) {
-        // if (await this.prisma.account.findFirst({
-        //     where: {
-        //         username: data.username
-        //     }
-        // })) throw new BadRequestException("Account already exists.");
-
         const res = await axios.post("https://blacket.org/worker/login", {
             username: data.username,
             password: data.password,
             code: data.code
         });
+
         if (res.data.error) {
             switch (res.data.reason) {
                 case "You must specify a code.":
@@ -53,8 +49,6 @@ export class AccountService {
             }
         }
 
-
-
         try {
             return new PublicAccount(await this.prisma.account.create({
                 data: {
@@ -64,19 +58,21 @@ export class AccountService {
                 }
             }));
         } catch (e) {
+            if (e instanceof PrismaClientKnownRequestError) throw new BadRequestException("Account already exists.");
+            console.error(e);
             throw new BadRequestException();
         }
     }
-    // other
 
     async getAccounts(userId: string) {
-        return await this.prisma.account.findMany({
+        return (await this.prisma.account.findMany({
             where: {
                 userId
             }
-        });
+        })).map(account => new PublicAccount(account));
     }
 
+    // other
     async getAccountById(id: string) {
         return await this.prisma.account.findUnique({
             where: {
